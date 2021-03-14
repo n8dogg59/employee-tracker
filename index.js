@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
+const consoleTable = require("console.table");
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -34,7 +35,7 @@ function startApp() {
             ]
         })
         .then(response => {
-            switch (response.action) {
+            switch (response.answer) {
                 case "View All Departments":
                     viewDept();
                     break;
@@ -60,19 +61,47 @@ function startApp() {
         })
 }
 
+// View all departments
 function viewDept() {
-    connection.query (
-       'SELECT * FROM department', function(err, res) {
-           if (err) throw err;
+    let query = 'SELECT id AS "ID", name AS "Department Name" FROM department;'
+    connection.query (query, function(err, res) {
+        if (err) throw err;
            console.table(res);
-           connection.end();
-       }
-       // where selecting from and what selecting
-    )
-    // .then (([rows]
-    // ) => {
-    //     console.log(rows);
-    // }
-        
-    // )
+           startApp();
+    })
+}
+
+// View all roles and corresponding relevant information
+function viewRoles() {
+    let query = 'SELECT r.id AS "ID", r.title AS "Job Title", r.salary AS "Salary", dep.name AS "Department" from role r LEFT JOIN department dep ON dep.id = r.department_id;'
+    connection.query (query, function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startApp();
+    })
+}
+
+// View all employees and corresponding relevant information
+function viewEmp() {
+    let query = 'SELECT emp.id, emp.first_name AS "First Name", emp.last_name AS "Last Name", r.title, dep.name AS "Department", r.salary AS "Salary", CONCAT(man.first_name," ",man.last_name) AS "Manager" FROM employee emp LEFT JOIN role r ON r.id = emp.role_id LEFT JOIN department dep ON dep.id = r.department_id LEFT JOIN employee man ON man.id = emp.manager_id ORDER BY emp.id;'
+    connection.query (query, function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startApp();
+    })
+}
+
+function addDept() {
+    console.log('Inserting a new department...\n');
+    inquirer
+        .prompt({
+                type: "input",
+                name: "newDep",
+                message: "Enter the new Department name"
+        })
+        .then((response) => {
+            // let query = 'INSERT INTO department (name) VALUES response.newDep;'
+            connection.query('INSERT INTO department(name) VALUES (?)', response.newDep);
+                startApp();
+            })
 }

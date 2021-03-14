@@ -7,23 +7,30 @@ DROP TABLE IF EXISTS role;
 DROP TABLE IF EXISTS employee;
 
 CREATE TABLE department (
-    id INTEGER NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    id INT NOT NULL
+    AUTO_INCREMENT,
+    name VARCHAR(80) NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE role (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id INT NOT NULL
+    AUTO_INCREMENT,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL NOT NULL,
     department_id INTEGER NOT NULL,
+    PRIMARY KEY (id),
     FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
 );
 
 CREATE TABLE employee (
-    id INTEGER NOT NULL PRIMARY KEY,
+    id INTEGER NOT NULL 
+    AUTO_INCREMENT,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     role_id INTEGER NOT NULL,
     manager_id INTEGER,
-    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE
+    PRIMARY KEY (id),
+    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
+    FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE CASCADE
 );

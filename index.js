@@ -100,8 +100,13 @@ function addDept() {
                 message: "Enter the new Department name"
         })
         .then((response) => {
-            // let query = 'INSERT INTO department (name) VALUES response.newDep;'
-            connection.query('INSERT INTO department(name) VALUES (?)', response.newDep);
-                startApp();
-            })
+            let query = `INSERT INTO department (name) VALUES ('${response.newDep}')`;
+            console.log(query);
+            connection.query(query);
+            startApp();
+        });
+}
+
+function addRole() {
+    
 }

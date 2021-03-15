@@ -93,6 +93,7 @@ function viewEmp() {
   });
 }
 
+// Adds a department to the current list of departments and generates a new unique id
 function addDept() {
   console.log("Inserting a new department...\n");
   inquirer
@@ -116,6 +117,7 @@ function addDept() {
     });
 }
 
+// Adds a new role with all the necessary information
 function addRole() {
   console.log("Inserting a new role...\n");
   let query = "SELECT * FROM department";
@@ -166,13 +168,13 @@ function addRole() {
   });
 }
 
+// Adds a new employee with all the necessary information
 function addEmp() {
   console.log("Inserting a new employee...\n");
   let query = "SELECT * FROM role";
   connection.query(query, function (err, res) {
     if (err) throw err;
     let roleArray = res.map((roles) => roles.title);
-    console.log(roleArray);
     inquirer
       .prompt([
         {

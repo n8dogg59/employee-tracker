@@ -165,3 +165,54 @@ function addRole() {
       });
   });
 }
+
+function addEmp() {
+  console.log("Inserting a new employee...\n");
+  let query = "SELECT * FROM role";
+  connection.query(query, function (err, res) {
+    if (err) throw err;
+    let roleArray = res.map((roles) => roles.title);
+    console.log(roleArray);
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "newFirst",
+          message: "Enter the employee's first name",
+          validate: (newFirstInput) => {
+            if (newFirstInput) {
+              return true;
+            } else {
+              console.log("Please enter the new employee's first name");
+              return false;
+            }
+          },
+        },
+        {
+          type: "input",
+          name: "newLast",
+          message: "Enter the employee's last name",
+          validate: (newLastInput) => {
+            if (newLastInput) {
+              return true;
+            } else {
+              console.log("Please enter the new employee's last name");
+              return false;
+            }
+          },
+        },
+        {
+          type: "list",
+          name: "empRole",
+          choices: roleArray,
+          message: "Select the role of the new employee",
+        },
+      ])
+      .then((response) => {
+        connection.query(
+          `INSERT INTO employee(first_name, last_name, role_id) VALUES ("${response.newFirst}", "${response.newLast}", (SELECT id FROM role WHERE title = "${response.empRole}"));`
+        );
+        startApp();
+      });
+  });
+}
